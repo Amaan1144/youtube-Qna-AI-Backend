@@ -1,0 +1,17 @@
+[project]
+name = "python-template"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.6",
+    "google-generativeai==0.8.3",
+    "langchain==0.3.10",
+    "pinecone==5.4.1",
+    "pydantic>=2.11.3",
+    "python-dotenv==1.0.1",
+    "requests==2.32.3",
+    "uvicorn==0.32.1",
+    "youtube-transcript-api==0.6.3",
+]
