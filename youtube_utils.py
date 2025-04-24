@@ -25,27 +25,26 @@ def get_video_title(video_id):
     title = data["items"][0]["snippet"]["title"]
     return title
 
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 def get_video_data(url):
     video_id = get_video_id(url)
-    logger.info(f"Fetching data for video ID: {video_id}")
-    
+    if not video_id:
+        raise ValueError("Could not extract video ID from URL")
+
+    # Default empty transcript
+    transcript = "[No transcript available]"
+    title = get_video_title(video_id)  # Always try to get the title
+
     try:
-        title = get_video_title(video_id)
-        logger.info(f"Title fetched: {title}")
-        
-        # Try English transcript first, then any language
-        try:
-            transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
-        except:
-            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)  # Fallback to any language
-            
+        # Try English first
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
         transcript = " ".join([entry["text"] for entry in transcript_list])
-        return title, transcript
-        
-    except Exception as e:
-        logger.error(f"No transcript available: {str(e)}")
-        return title, None  # Return title + None for transcript
+    except Exception:
+        try:
+            # Fallback to any available language
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+            transcript = " ".join([entry["text"] for entry in transcript_list])
+        except Exception:
+            # If no transcript exists, keep default "[No transcript available]"
+            pass  # No error, just proceed with default
+
+    return title, transcript
