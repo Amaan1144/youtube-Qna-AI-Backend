@@ -25,24 +25,23 @@ def get_video_title(video_id):
     title = data["items"][0]["snippet"]["title"]
     return title
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 def get_video_data(url):
     video_id = get_video_id(url)
-    if not video_id:
-        raise ValueError("Invalid YouTube URL")
-
+    logger.info(f"Attempting to fetch data for video ID: {video_id}")
+    
     try:
-        # Try English first
+        title = get_video_title(video_id)
+        logger.info(f"Successfully fetched title: {title}")
+        
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+        transcript = " ".join([entry["text"] for entry in transcript_list])
+        logger.info(f"Successfully fetched transcript (length: {len(transcript)} chars)")
+        
+        return title, transcript
     except Exception as e:
-        # Log the exact error for debugging
-        print(f"Transcript fetch failed (English): {str(e)}")
-        try:
-            # Fallback to any language
-            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-        except Exception as e:
-            # Critical: Don't proceed if no transcript exists
-            raise ValueError(f"No transcript available for video {video_id}. Original error: {str(e)}")
-
-    transcript = " ".join([entry["text"] for entry in transcript_list])
-    title = get_video_title(video_id)  # Ensure this works on Render too
-    return title, transcript
+        logger.error(f"Failed to fetch transcript: {str(e)}")
+        return "[Error]", "[No transcript available]"
