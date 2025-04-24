@@ -31,17 +31,21 @@ logger = logging.getLogger(__name__)
 
 def get_video_data(url):
     video_id = get_video_id(url)
-    logger.info(f"Attempting to fetch data for video ID: {video_id}")
+    logger.info(f"Fetching data for video ID: {video_id}")
     
     try:
         title = get_video_title(video_id)
-        logger.info(f"Successfully fetched title: {title}")
+        logger.info(f"Title fetched: {title}")
         
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+        # Try English transcript first, then any language
+        try:
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+        except:
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)  # Fallback to any language
+            
         transcript = " ".join([entry["text"] for entry in transcript_list])
-        logger.info(f"Successfully fetched transcript (length: {len(transcript)} chars)")
-        
         return title, transcript
+        
     except Exception as e:
-        logger.error(f"Failed to fetch transcript: {str(e)}")
-        return "[Error]", "[No transcript available]"
+        logger.error(f"No transcript available: {str(e)}")
+        return title, None  # Return title + None for transcript
