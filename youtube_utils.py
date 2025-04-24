@@ -28,23 +28,21 @@ def get_video_title(video_id):
 def get_video_data(url):
     video_id = get_video_id(url)
     if not video_id:
-        raise ValueError("Could not extract video ID from URL")
-
-    # Default empty transcript
-    transcript = "[No transcript available]"
-    title = get_video_title(video_id)  # Always try to get the title
+        raise ValueError("Invalid YouTube URL")
 
     try:
         # Try English first
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
-        transcript = " ".join([entry["text"] for entry in transcript_list])
-    except Exception:
+    except Exception as e:
+        # Log the exact error for debugging
+        print(f"Transcript fetch failed (English): {str(e)}")
         try:
-            # Fallback to any available language
+            # Fallback to any language
             transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-            transcript = " ".join([entry["text"] for entry in transcript_list])
-        except Exception:
-            # If no transcript exists, keep default "[No transcript available]"
-            pass  # No error, just proceed with default
+        except Exception as e:
+            # Critical: Don't proceed if no transcript exists
+            raise ValueError(f"No transcript available for video {video_id}. Original error: {str(e)}")
 
+    transcript = " ".join([entry["text"] for entry in transcript_list])
+    title = get_video_title(video_id)  # Ensure this works on Render too
     return title, transcript
