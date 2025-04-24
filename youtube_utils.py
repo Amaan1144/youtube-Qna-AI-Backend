@@ -2,6 +2,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import re
 import requests
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def get_video_id(url):
     pattern = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"
