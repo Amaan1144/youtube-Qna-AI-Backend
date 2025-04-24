@@ -36,10 +36,7 @@ def get_video_data(url):
 
     try:
         # Try English first
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'], proxies = {
-    'http': 'http://50.175.212.74:80',
-    'https': 'http://170.106.197.21:13001'
-})
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
         transcript = " ".join([entry["text"] for entry in transcript_list])
     except Exception:
         try:
