@@ -44,12 +44,12 @@ def get_video_data(url):
 
     try:
         # Try English first
-        transcript_list = ytt_api.get_transcript(video_id, languages=['en'])
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'], proxies=proxy_config)
         transcript = " ".join([entry["text"] for entry in transcript_list])
     except Exception:
         try:
             # Fallback to any available language
-            transcript_list = ytt_api.get_transcript(video_id)
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id, proxies=proxy_config)
             transcript = " ".join([entry["text"] for entry in transcript_list])
         except Exception:
             # If no transcript exists, keep default "[No transcript available]"
