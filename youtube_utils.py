@@ -49,7 +49,7 @@ def get_video_data(url):
     except Exception:
         try:
             # Fallback to any available language
-            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+            transcript_list = ytt_api.get_transcript(video_id)
             transcript = " ".join([entry["text"] for entry in transcript_list])
         except Exception:
             # If no transcript exists, keep default "[No transcript available]"
