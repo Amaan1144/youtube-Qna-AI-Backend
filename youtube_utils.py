@@ -35,12 +35,10 @@ def get_video_data(url):
     transcript = "[No transcript available]"
     title = get_video_title(video_id)  # Always try to get the title
 
-    ytt_api = YouTubeTranscriptApi(
     proxy_config=WebshareProxyConfig(
         proxy_username="qpywvtbt",
         proxy_password="1syhdy3pmfer",
         )
-    )
 
     try:
         # Try English first
