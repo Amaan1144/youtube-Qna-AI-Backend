@@ -1,4 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.proxies import WebshareProxyConfig
 import re
 import requests
 import os
@@ -34,9 +35,16 @@ def get_video_data(url):
     transcript = "[No transcript available]"
     title = get_video_title(video_id)  # Always try to get the title
 
+    ytt_api = YouTubeTranscriptApi(
+    proxy_config=WebshareProxyConfig(
+        proxy_username="qpywvtbt",
+        proxy_password="1syhdy3pmfer",
+        )
+    )
+
     try:
         # Try English first
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+        transcript_list = ytt_api.get_transcript(video_id, languages=['en'])
         transcript = " ".join([entry["text"] for entry in transcript_list])
     except Exception:
         try:
