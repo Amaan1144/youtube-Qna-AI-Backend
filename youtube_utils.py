@@ -36,8 +36,8 @@ def get_video_data(url):
     title = get_video_title(video_id)  # Always try to get the title
 
     proxy_config=WebshareProxyConfig(
-        proxy_username="qpywvtbt",
-        proxy_password="1syhdy3pmfer",
+        proxy_username=os.getenv("PROXY_USERNAME"),
+        proxy_password=os.getenv("PROXY_PASSWORD"),
         )
 
     try:
